@@ -5,7 +5,80 @@ The **Gen AI Platform for Automated Content Transformation** follows a distribut
 The platform accepts multiple input formats and operator instructions, performs document processing and RAG-based contextual analysis, and uses specialized AI agents to generate multiple output artefacts in operator-selected formats.
 
 ## High-Level Architecture
-
+### New Architecture including blockchain and cybersecurity
+USER
+ │
+ │  uploads:
+ │  report.pdf
+ │  incident.docx
+ │  image.png
+ │  prompt
+ │
+ ▼
+SPRING BOOT
+ │
+ │ authenticate
+ │ authorize
+ │ create job
+ │ validate request
+ │
+ ▼
+FASTAPI
+ │
+ ▼
+Transformation Orchestrator
+ │
+ ├── Extract PDF
+ ├── Extract DOCX
+ ├── Extract image/OCR
+ └── Process prompt/context
+ │
+ ▼
+Normalized Knowledge
+ │
+ ▼
+Chunking
+ │
+ ▼
+Embeddings
+ │
+ ▼
+PostgreSQL + pgvector
+ │
+ ▼
+RAG Retrieval
+ │
+ ▼
+Analysis Agent
+ │
+ ▼
+Canonical Context
+ │
+ ├───────────────┬─────────────────┬────────────────┐
+ ▼               ▼                 ▼                ▼
+Summary       Advisory        Presentation      Social
+Agent           Agent             Agent           Agent
+ │               │                 │                │
+ └───────────────┴─────────────────┴────────────────┘
+                         │
+                         ▼
+                 Structured Outputs
+                         │
+                         ▼
+                   Format Exporter
+                         │
+          ┌──────────────┼──────────────┐
+          ▼              ▼              ▼
+        PDF            DOCX           PPTX
+                         │
+                         ▼
+                    SHA-256
+                         │
+                         ▼
+                  Blockchain
+                         │
+                         ▼
+                  Verification
 ```mermaid
 flowchart TB
 
