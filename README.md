@@ -6,79 +6,163 @@ The platform accepts multiple input formats and operator instructions, performs 
 
 ## High-Level Architecture
 ### New Architecture including blockchain and cybersecurity
-USER
- │
- │  uploads:
- │  report.pdf
- │  incident.docx
- │  image.png
- │  prompt
- │
- ▼
-SPRING BOOT
- │
- │ authenticate
- │ authorize
- │ create job
- │ validate request
- │
- ▼
-FASTAPI
- │
- ▼
-Transformation Orchestrator
- │
- ├── Extract PDF
- ├── Extract DOCX
- ├── Extract image/OCR
- └── Process prompt/context
- │
- ▼
-Normalized Knowledge
- │
- ▼
-Chunking
- │
- ▼
-Embeddings
- │
- ▼
-PostgreSQL + pgvector
- │
- ▼
-RAG Retrieval
- │
- ▼
-Analysis Agent
- │
- ▼
-Canonical Context
- │
- ├───────────────┬─────────────────┬────────────────┐
- ▼               ▼                 ▼                ▼
-Summary       Advisory        Presentation      Social
-Agent           Agent             Agent           Agent
- │               │                 │                │
- └───────────────┴─────────────────┴────────────────┘
-                         │
-                         ▼
-                 Structured Outputs
-                         │
-                         ▼
-                   Format Exporter
-                         │
-          ┌──────────────┼──────────────┐
-          ▼              ▼              ▼
-        PDF            DOCX           PPTX
-                         │
-                         ▼
-                    SHA-256
-                         │
-                         ▼
-                  Blockchain
-                         │
-                         ▼
-                  Verification
+# Gen AI Platform for Automated Content Transformation
+
+A secure, RAG-powered Generative AI platform that transforms heterogeneous
+documents and contextual inputs into multiple communication artefacts such as
+Executive Summaries, Advisories, Presentations, Social Media Posts, Infographics
+and Video Packages.
+
+The platform is designed for enterprise and cybersecurity-oriented environments
+where data isolation, provenance, auditability and output integrity are critical.
+
+---
+
+# System Architecture
+
+The platform follows a microservices-oriented architecture divided into:
+
+1. User Experience Plane
+2. Enterprise Control Plane
+3. AI Processing Plane
+4. Trust & Security Layer
+5. Data & Artifact Layer
+
+---
+
+## High-Level Architecture
+
+```mermaid
+flowchart TB
+
+    USER["Operator / User"]
+
+    subgraph UX["USER EXPERIENCE PLANE"]
+        REACT["React Web Dashboard"]
+        UPLOAD["Multi-File Upload"]
+        PROMPT["Prompt & Context Input"]
+        CONFIG["Output & Generation Controls"]
+        PREVIEW["Preview / Download"]
+        VERIFY["Artifact Verification"]
+    end
+
+    subgraph CONTROL["ENTERPRISE CONTROL PLANE"]
+        SB["Spring Boot Backend"]
+        SEC["Spring Security"]
+        AUTH["JWT Authentication"]
+        RBAC["Role Based Access Control"]
+        JOB["Job Management"]
+        AUDIT["Audit Logging"]
+        API["Internal API"]
+    end
+
+    subgraph DATA["DATA & STORAGE"]
+        PG["PostgreSQL"]
+        VECTOR["pgvector"]
+        OBJECT["Artifact Storage"]
+    end
+
+    subgraph AI["AI PROCESSING PLANE"]
+        FASTAPI["FastAPI AI Engine"]
+        ORCH["Transformation Orchestrator"]
+
+        INGEST["Multi-Format Ingestion"]
+        EXTRACT["Content Extraction"]
+        NORMALIZE["Content Normalization"]
+        CHUNK["Document Chunking"]
+
+        EMBED["Embedding Model"]
+        RETRIEVE["Semantic Retriever"]
+        RAG["RAG Pipeline"]
+
+        ANALYSIS["Analysis Agent"]
+        CONTEXT["Canonical Context"]
+
+        OUT_ORCH["Output Agent Orchestrator"]
+
+        SUMMARY["Executive Summary Agent"]
+        ADVISORY["Advisory Agent"]
+        SOCIAL["Social Media Agent"]
+        PRESENT["Presentation Agent"]
+        INFO["Infographic Agent"]
+        VIDEO["Video Package Agent"]
+
+        VALIDATE["Structured Output Validation"]
+        EXPORT["Format Exporters"]
+    end
+
+    subgraph TRUST["TRUST & SECURITY LAYER"]
+        HASH["SHA-256 Integrity Hashing"]
+        BLOCKCHAIN["Permissioned Blockchain"]
+        PROVENANCE["Provenance Records"]
+    end
+
+    USER --> REACT
+
+    REACT --> UPLOAD
+    REACT --> PROMPT
+    REACT --> CONFIG
+    REACT --> PREVIEW
+    REACT --> VERIFY
+
+    UPLOAD --> SB
+    PROMPT --> SB
+    CONFIG --> SB
+
+    SB --> SEC
+    SEC --> AUTH
+    SEC --> RBAC
+    SB --> JOB
+    SB --> AUDIT
+    SB --> API
+
+    SB --> FASTAPI
+
+    FASTAPI --> ORCH
+
+    ORCH --> INGEST
+    INGEST --> EXTRACT
+    EXTRACT --> NORMALIZE
+    NORMALIZE --> CHUNK
+
+    CHUNK --> EMBED
+    EMBED --> VECTOR
+    VECTOR --> RETRIEVE
+    RETRIEVE --> RAG
+
+    RAG --> ANALYSIS
+    ANALYSIS --> CONTEXT
+
+    CONTEXT --> OUT_ORCH
+
+    OUT_ORCH --> SUMMARY
+    OUT_ORCH --> ADVISORY
+    OUT_ORCH --> SOCIAL
+    OUT_ORCH --> PRESENT
+    OUT_ORCH --> INFO
+    OUT_ORCH --> VIDEO
+
+    SUMMARY --> VALIDATE
+    ADVISORY --> VALIDATE
+    SOCIAL --> VALIDATE
+    PRESENT --> VALIDATE
+    INFO --> VALIDATE
+    VIDEO --> VALIDATE
+
+    VALIDATE --> EXPORT
+    EXPORT --> OBJECT
+
+    PG --> JOB
+    PG --> AUDIT
+    VECTOR --> PG
+
+    OBJECT --> HASH
+    HASH --> BLOCKCHAIN
+    BLOCKCHAIN --> PROVENANCE
+
+    HASH --> VERIFY
+    PROVENANCE --> VERIFY
+
 ```mermaid
 flowchart TB
 
