@@ -6,6 +6,247 @@ The platform accepts multiple input formats and operator instructions, performs 
 
 ## High-Level Architecture
 ### New Architecture including blockchain and cybersecurity
+## Complete System Architecture
+
+```mermaid
+flowchart TB
+
+    USER["Operator / User"]
+
+    subgraph UX["USER EXPERIENCE PLANE"]
+        REACT["React Dashboard"]
+        UPLOAD["Multi File Upload"]
+        PROMPT["Prompt and Context"]
+        CONFIG["Audience / Tone / Language / Style"]
+        OUTPUT_SELECT["Output Type and Format Selection"]
+        STATUS["Job Status and Progress"]
+        PREVIEW["Preview and Download"]
+        VERIFY_UI["Integrity Verification"]
+    end
+
+    subgraph CONTROL["ENTERPRISE CONTROL PLANE"]
+        SPRING["Spring Boot Backend"]
+        SECURITY["Spring Security"]
+        JWT["JWT Authentication"]
+        RBAC["Role Based Access Control"]
+        VALIDATION["Request Validation"]
+        JOB["Transformation Job Service"]
+        AUDIT["Audit Service"]
+    end
+
+    subgraph STORAGE["DATA AND STORAGE LAYER"]
+        POSTGRES[("PostgreSQL")]
+        PGVECTOR[("pgvector")]
+        ARTIFACT["Artifact Storage"]
+    end
+
+    subgraph AI["AI PROCESSING PLANE"]
+        FASTAPI["FastAPI AI Engine"]
+
+        ORCHESTRATOR["Transformation Orchestrator Agent"]
+
+        INGESTION["Multi Format Ingestion"]
+
+        PDF["PDF Parser"]
+        DOCX["DOCX Parser"]
+        PPTX["PPTX Parser"]
+        XLSX["XLSX / CSV Parser"]
+        IMAGE["Image / OCR"]
+        TEXT["TXT / Raw Text"]
+        USERPROMPT["Prompt Processor"]
+
+        NORMALIZE["Content Normalization"]
+        CHUNK["Semantic Chunking"]
+
+        EMBEDDING["Embedding Model"]
+        VECTOR_SEARCH["Vector Search"]
+        RETRIEVER["Semantic Retriever"]
+        METADATA["Job and User Metadata Filtering"]
+
+        RAG["RAG Pipeline"]
+
+        ANALYSIS["Analysis Agent"]
+        FACTS["Facts and Key Findings"]
+        ENTITIES["Entities and Events"]
+        RISKS["Risks and Recommendations"]
+        CONTEXT["Canonical Context"]
+
+        OUTPUT_ORCHESTRATOR["Output Agent Orchestrator"]
+
+        SUMMARY["Executive Summary Agent"]
+        ADVISORY["Advisory Agent"]
+        SOCIAL["Social Media Agent"]
+        PRESENTATION["Presentation Agent"]
+        INFOGRAPHIC["Infographic Agent"]
+        VIDEO["Video Package Agent"]
+
+        STRUCTURED["Structured Output"]
+        SCHEMA["Pydantic Schema Validation"]
+
+        EXPORT["Deterministic Export Layer"]
+
+        PDF_EXPORT["PDF Exporter"]
+        DOCX_EXPORT["DOCX Exporter"]
+        PPTX_EXPORT["PPTX Exporter"]
+        JSON_EXPORT["JSON Exporter"]
+        TXT_EXPORT["TXT Exporter"]
+        HTML_EXPORT["HTML Exporter"]
+    end
+
+    subgraph SECURITY_LAYER["CYBERSECURITY AND TRUST LAYER"]
+        FILE_SECURITY["Secure File Validation"]
+        MALWARE["Malware / File Security Scan"]
+        INJECTION["Prompt Injection Defense"]
+        ISOLATION["Job and User Data Isolation"]
+        ENCRYPTION["Encryption in Transit and at Rest"]
+        HASH["SHA 256 Hash Service"]
+        PROVENANCE["Provenance Service"]
+        BLOCKCHAIN["Permissioned Blockchain"]
+        TX["Blockchain Transaction ID"]
+    end
+
+    subgraph ARTIFACT["ARTIFACT LIFECYCLE"]
+        GENERATED["Generated Artifacts"]
+        HASHED["Hashed Artifacts"]
+        VERIFIED["Verified Artifact"]
+        TAMPERED["Tampering Detected"]
+    end
+
+
+    USER --> REACT
+
+    REACT --> UPLOAD
+    REACT --> PROMPT
+    REACT --> CONFIG
+    REACT --> OUTPUT_SELECT
+    REACT --> STATUS
+    REACT --> PREVIEW
+    REACT --> VERIFY_UI
+
+    UPLOAD --> SPRING
+    PROMPT --> SPRING
+    CONFIG --> SPRING
+    OUTPUT_SELECT --> SPRING
+
+    SPRING --> SECURITY
+    SECURITY --> JWT
+    SECURITY --> RBAC
+    SPRING --> VALIDATION
+    SPRING --> JOB
+    SPRING --> AUDIT
+
+    SPRING --> POSTGRES
+    JOB --> POSTGRES
+    AUDIT --> POSTGRES
+
+    SPRING --> FASTAPI
+
+    FASTAPI --> ORCHESTRATOR
+
+    ORCHESTRATOR --> INGESTION
+
+    INGESTION --> PDF
+    INGESTION --> DOCX
+    INGESTION --> PPTX
+    INGESTION --> XLSX
+    INGESTION --> IMAGE
+    INGESTION --> TEXT
+    INGESTION --> USERPROMPT
+
+    PDF --> NORMALIZE
+    DOCX --> NORMALIZE
+    PPTX --> NORMALIZE
+    XLSX --> NORMALIZE
+    IMAGE --> NORMALIZE
+    TEXT --> NORMALIZE
+    USERPROMPT --> NORMALIZE
+
+    NORMALIZE --> CHUNK
+
+    CHUNK --> EMBEDDING
+    EMBEDDING --> PGVECTOR
+    PGVECTOR --> VECTOR_SEARCH
+
+    VECTOR_SEARCH --> RETRIEVER
+    RETRIEVER --> METADATA
+    METADATA --> RAG
+
+    ORCHESTRATOR --> RAG
+    RAG --> ANALYSIS
+
+    ANALYSIS --> FACTS
+    ANALYSIS --> ENTITIES
+    ANALYSIS --> RISKS
+
+    FACTS --> CONTEXT
+    ENTITIES --> CONTEXT
+    RISKS --> CONTEXT
+
+    CONTEXT --> OUTPUT_ORCHESTRATOR
+
+    OUTPUT_ORCHESTRATOR --> SUMMARY
+    OUTPUT_ORCHESTRATOR --> ADVISORY
+    OUTPUT_ORCHESTRATOR --> SOCIAL
+    OUTPUT_ORCHESTRATOR --> PRESENTATION
+    OUTPUT_ORCHESTRATOR --> INFOGRAPHIC
+    OUTPUT_ORCHESTRATOR --> VIDEO
+
+    SUMMARY --> STRUCTURED
+    ADVISORY --> STRUCTURED
+    SOCIAL --> STRUCTURED
+    PRESENTATION --> STRUCTURED
+    INFOGRAPHIC --> STRUCTURED
+    VIDEO --> STRUCTURED
+
+    STRUCTURED --> SCHEMA
+    SCHEMA --> EXPORT
+
+    EXPORT --> PDF_EXPORT
+    EXPORT --> DOCX_EXPORT
+    EXPORT --> PPTX_EXPORT
+    EXPORT --> JSON_EXPORT
+    EXPORT --> TXT_EXPORT
+    EXPORT --> HTML_EXPORT
+
+    PDF_EXPORT --> GENERATED
+    DOCX_EXPORT --> GENERATED
+    PPTX_EXPORT --> GENERATED
+    JSON_EXPORT --> GENERATED
+    TXT_EXPORT --> GENERATED
+    HTML_EXPORT --> GENERATED
+
+    GENERATED --> ARTIFACT
+    ARTIFACT --> ARTIFACT_STORAGE["Artifact Storage"]
+    ARTIFACT_STORAGE --> HASH
+    HASH --> HASHED
+
+    HASHED --> PROVENANCE
+    PROVENANCE --> BLOCKCHAIN
+    BLOCKCHAIN --> TX
+
+    TX --> VERIFY_UI
+
+    VERIFY_UI --> HASH
+
+    HASH --> VERIFIED
+    HASH --> TAMPERED
+
+    SECURITY --> FILE_SECURITY
+    FILE_SECURITY --> MALWARE
+    MALWARE --> INGESTION
+
+    FASTAPI --> INJECTION
+    INJECTION --> RAG
+
+    METADATA --> ISOLATION
+    ISOLATION --> RAG
+
+    ENCRYPTION --> SPRING
+    ENCRYPTION --> FASTAPI
+    ENCRYPTION --> ARTIFACT_STORAGE
+
+    POSTGRES --> PGVECTOR
+
 # Gen AI Platform for Automated Content Transformation
 
 A secure, RAG-powered Generative AI platform that transforms heterogeneous
